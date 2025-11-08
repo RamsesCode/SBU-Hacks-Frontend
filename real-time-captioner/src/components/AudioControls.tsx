@@ -49,11 +49,8 @@ const AudioControls: React.FC<AudioControlsProps> = ({
           }}
           aria-label={isListening ? 'Stop listening' : 'Start listening'}
         >
-          <div className="mic-icon">
-            {isListening ? '🛑' : '🎤'}
-          </div>
           <span className="button-text">
-            {isListening ? 'Stop' : 'Start'}
+            {isListening ? 'STOP' : 'START'}
           </span>
         </button>
 
@@ -62,8 +59,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
           onClick={onClearCaptions}
           aria-label="Clear all captions"
         >
-          <div className="clear-icon">🗑️</div>
-          <span className="button-text">Clear</span>
+          <span className="button-text">CLEAR</span>
         </button>
       </div>
 

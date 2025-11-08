@@ -1,0 +1,113 @@
+/* Navbar Component Styles */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #313638;
+  border-bottom: 4px solid #f8b700;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  height: 60px;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 4px #313638, 0 4px 0 4px #f8b700;
+  font-family: 'VT323', monospace;
+  letter-spacing: 1px;
+}
+
+.navbar-title {
+  color: #f8b700;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 0px #ff004d;
+  font-family: 'VT323', monospace;
+}
+
+.navbar-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar-button {
+  background-color: #222034;
+  border: 3px solid #29adff;
+  color: #f4f4f4;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 18px;
+  font-family: 'VT323', monospace;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.navbar-button:hover {
+  background-color: #29adff;
+  color: #222034;
+  transform: translateY(-2px);
+}
+
+.navbar-button:active {
+  transform: scale(0.98);
+}
+
+.navbar-button-logout {
+  background-color: #222034;
+  border: 3px solid #f8b700;
+  color: #f8b700;
+}
+
+.navbar-button-logout:hover {
+  background-color: #f8b700;
+  border-color: #f8b700;
+  color: #222034;
+  transform: translateY(-2px);
+}
+
+.navbar-button-danger {
+  background-color: #222034;
+  border: 3px solid #ff004d;
+  color: #ff004d;
+}
+
+.navbar-button-danger:hover {
+  background-color: #ff004d;
+  border-color: #ff004d;
+  color: #f4f4f4;
+  transform: translateY(-2px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 20px;
+    height: 50px;
+  }
+  
+  .navbar-title {
+    font-size: 22px;
+  }
+  
+  .navbar-button {
+    padding: 6px 12px;
+    font-size: 16px;
+  }
+}
+
+/* Accessibility - Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-button {
+    transition: none;
+  }
+  
+  .navbar-button:hover {
+    transform: none;
+  }
+}

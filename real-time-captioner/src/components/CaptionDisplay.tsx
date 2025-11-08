@@ -22,6 +22,8 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
   autoScroll = true
 }) => {
   const [visibleCaptions, setVisibleCaptions] = React.useState<Caption[]>([]);
+  const [typedText, setTypedText] = React.useState<string>('');
+  const [currentId, setCurrentId] = React.useState<string>('');
 
   // Auto-remove captions after 15 seconds and limit to fewer lines for better positioning
   React.useEffect(() => {
@@ -56,6 +58,30 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
 
     return () => clearInterval(interval);
   }, []);
+
+  // Terminal typing effect for the current caption
+  React.useEffect(() => {
+    if (visibleCaptions.length === 0) return;
+    const current = visibleCaptions[visibleCaptions.length - 1];
+    const id = current.id;
+
+    // If caption changed (new id or text), restart typing
+    if (id !== currentId || !current.isFinal) {
+      setCurrentId(id);
+      let i = 0;
+      const target = current.text;
+      setTypedText('');
+      const speed = 18; // ms per char
+      const timer = setInterval(() => {
+        i += 1;
+        setTypedText(target.slice(0, i));
+        if (i >= target.length) {
+          clearInterval(timer);
+        }
+      }, speed);
+      return () => clearInterval(timer);
+    }
+  }, [visibleCaptions, currentId]);
 
   const getAgeOpacity = (timestamp: Date, position: string): number => {
     const now = new Date();
@@ -122,7 +148,14 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
                 }}
               >
                 <div className="caption-content">
-                  <span className="caption-text">{caption.text}</span>
+                  {position === 'current' ? (
+                    <span className="caption-text terminal">
+                      {typedText}
+                      <span className="pixel-cursor" />
+                    </span>
+                  ) : (
+                    <span className="caption-text">{caption.text}</span>
+                  )}
                   {showConfidence && (
                     <span 
                       className="confidence-indicator"

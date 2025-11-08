@@ -3,6 +3,8 @@ import CaptionDisplay from './components/CaptionDisplay';
 import AudioControls from './components/AudioControls';
 import Settings from './components/Settings';
 import Diagnostics from './components/Diagnostics';
+import Navbar from './components/Navbar';
+import Landing from './components/Landing';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
 import { Caption, CaptionSettings } from './types/speech';
 import './App.css';
@@ -25,6 +27,8 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showDiagnostics, setShowDiagnostics] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>('');
 
   const handleResult = useCallback((caption: Caption) => {
     setCaptions(prev => {
@@ -86,49 +90,46 @@ function App() {
     setSettings(newSettings);
   }, []);
 
+  const handleLogin = useCallback((email: string) => {
+    setUserEmail(email);
+    setIsAuthenticated(true);
+  }, []);
+
+  const handleLogout = useCallback(() => {
+    setIsAuthenticated(false);
+    setUserEmail('');
+    // Clear sensitive state (captions) on logout for privacy
+    clearCaptions();
+  }, [clearCaptions]);
+
+  // Render landing page when not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="App" style={{ fontFamily: settings.fontFamily }}>
+        <Landing onLogin={handleLogin} onCreateAccount={() => alert('Account creation not implemented in this demo.')} />
+      </div>
+    );
+  }
+
   return (
-    <div className="App" style={{ 
-      fontFamily: settings.fontFamily 
-    }}>
-      <header className="app-header">
-        <h1>SpeakEasy</h1>
-        <div className="header-controls">
-          <button 
-            className="settings-button"
-            onClick={() => setShowDiagnostics(!showDiagnostics)}
-            aria-label="Toggle diagnostics"
-          >
-            🔍 Debug
-          </button>
-          {showDiagnostics && (
-            <button 
-              className="settings-button"
-              onClick={() => {
-                // Force complete reset
-                window.location.reload();
-              }}
-              aria-label="Force reset application"
-              style={{backgroundColor: 'rgba(244, 67, 54, 0.8)'}}
-            >
-              🔄 Reset
-            </button>
-          )}
-          <button 
-            className="settings-button"
-            onClick={() => setIsSettingsOpen(true)}
-            aria-label="Open settings"
-          >
-            ⚙️ Settings
-          </button>
-        </div>
-      </header>
+    <div className="App" style={{ fontFamily: settings.fontFamily }}>
+      {/* Background removed as requested */}
+      <Navbar
+        showDiagnostics={showDiagnostics}
+        onToggleDiagnostics={() => setShowDiagnostics(!showDiagnostics)}
+        onForceReset={() => window.location.reload()}
+        onLogout={handleLogout}
+        userEmail={userEmail}
+      />
+      {/* Pixel frame overlay that expands to the browser edges between navbar and controls */}
+      <div className="pixel-frame" aria-hidden="true" />
 
       <main className="app-main">
         {errorMessage && (
           <div className="error-banner">
             <span className="error-icon">⚠️</span>
             <span className="error-text">{errorMessage}</span>
-            <button 
+            <button
               className="error-close"
               onClick={() => setErrorMessage('')}
               aria-label="Close error message"

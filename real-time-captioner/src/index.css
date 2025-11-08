@@ -1,3 +1,23 @@
+/* Pixel theme font and variables */
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://fonts.gstatic.com/s/vt323/v17/pxiKyp0ihIEF2isfFJXUdVNF.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  /* Pixel theme palette */
+  --pixel-bg: #222034;
+  --pixel-surface: #313638;
+  --pixel-primary: #29adff;
+  --pixel-accent: #f8b700;
+  --pixel-danger: #ff004d;
+  --pixel-success: #00e436;
+  --pixel-text: #f4f4f4;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +25,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--pixel-bg);
 }
 
 code {

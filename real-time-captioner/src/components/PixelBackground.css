@@ -1,0 +1,315 @@
+/* ---------- Palette ---------- */
+@supports (color: color(display-p3 1 1 1)) {
+  :root {
+    --hero-piece-1: color(display-p3 0.1889 0.0624 0.4576);
+    --hero-piece-2: color(display-p3 0.2802 0.062 0.558);
+    --hero-piece-3: color(display-p3 0.37 0.1073 0.6327);
+    --hero-piece-4: color(display-p3 0.4853 0.1469 0.6927);
+    --hero-piece-5: color(display-p3 0.5891 0.232 0.808);
+    --hero-piece-6: color(display-p3 0.888 0.312 0.648);
+    --hero-piece-7: color(display-p3 0.9569 0.4505 0.3725);
+    --hero-piece-8: color(display-p3 0.9765 0.5686 0.3647);
+    --hero-piece-9: color(display-p3 0.9843 0.651 0.451);
+    --hero-piece-10: color(display-p3 0.9922 0.7804 0.5765);
+    --hero-piece-11: color(display-p3 1 0.9095 0.6766);
+    --hero-piece-12: color(display-p3 1 0.9567 0.74);
+    --hero-piece-13: color(display-p3 1 0.9961 0.898);
+    --hero-piece-14: color(display-p3 1 0.9922 0.8196);
+    --hero-piece-15: color(display-p3 1 0.9961 0.898);
+    --footer-piece-1: color(display-p3 0.9647 0.9843 0.902);
+    --footer-piece-2: color(display-p3 0.9294 0.9725 0.9137);
+    --footer-piece-3: color(display-p3 0.8941 0.9608 0.9255);
+    --footer-piece-4: color(display-p3 0.8588 0.949 0.9333);
+    --footer-piece-5: color(display-p3 0.8235 0.9412 0.9451);
+    --footer-piece-6: color(display-p3 0.7882 0.9294 0.9569);
+    --footer-piece-7: color(display-p3 0.7569 0.9176 0.9647);
+    --footer-piece-8: color(display-p3 0.7216 0.9059 0.9804);
+    --footer-piece-9: color(display-p3 0.6902 0.898 0.9882);
+    --footer-piece-10: color(display-p3 0.6382 0.8732 0.9752);
+    --footer-piece-11: color(display-p3 0.5487 0.835 0.959);
+    --footer-piece-12: color(display-p3 0.5215 0.8185 0.9486);
+    --footer-piece-13: color(display-p3 0.4331 0.7804 0.9326);
+    --footer-piece-14: color(display-p3 0.3879 0.6785 0.1596);
+    --footer-piece-15: color(display-p3 0.3373 0.2157 0.1412);
+    --footer-piece-16: color(display-p3 0.2824 0.1804 0.1137);
+    --footer-piece-17: color(display-p3 0.251 0.1569 0.102);
+    --footer-piece-18: color(display-p3 0.2235 0.1373 0.0902);
+  }
+}
+
+/* fallback hex palette */
+:root {
+  --hero-piece-1: #350D7A;
+  --hero-piece-2: #4E0994;
+  --hero-piece-3: #6714A8;
+  --hero-piece-4: #871BB7;
+  --hero-piece-5: #A333D5;
+  --hero-piece-6: #F640A8;
+  --hero-piece-7: #FF6957;
+  --hero-piece-8: #FF8A50;
+  --hero-piece-9: #FFA168;
+  --hero-piece-10: #FFC48B;
+  --hero-piece-11: #FFE7A4;
+  --hero-piece-12: #FFF3B6;
+  --hero-piece-13: #FFFEE2;
+  --hero-piece-14: #FFFDCC;
+  --hero-piece-15: #FFFEE5;
+  --footer-piece-1: #F5FBE4;
+  --footer-piece-2: #EAF8E8;
+  --footer-piece-3: #E0F6EB;
+  --footer-piece-4: #D5F3EE;
+  --footer-piece-5: #CAF1F2;
+  --footer-piece-6: #C0EEF5;
+  --footer-piece-7: #B6ECF8;
+  --footer-piece-8: #ABE9FC;
+  --footer-piece-9: #A1E7FF;
+  --footer-piece-10: #91E1FC;
+  --footer-piece-11: #73D7F8;
+  --footer-piece-12: #6AD3F6;
+  --footer-piece-13: #48CAF2;
+  --footer-piece-14: #44AF00;
+  --footer-piece-15: #5B3520;
+  --footer-piece-16: #4C2D1A;
+  --footer-piece-17: #442717;
+  --footer-piece-18: #3D2215;
+
+  /* pixel settings */
+  --pixel-size: 6px;
+  --scene-width: 100vw;
+  --scene-height: 100vh;
+}
+
+/* Scene container (behind UI) */
+.pixel-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    /* sky gradient (pixelated by repeating-linear-gradient) */
+    linear-gradient(180deg, var(--hero-piece-5), var(--hero-piece-2) 60%),
+    /* subtle pixel grid overlay for texture */
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.04) 0 var(--pixel-size), transparent var(--pixel-size) calc(var(--pixel-size)*2));
+  background-size: cover;
+  display: block;
+  image-rendering: pixelated;
+  transform-origin: center;
+}
+
+/* To create actual large pixel blocks we layer pseudo elements with repeating gradients */
+.pixel-scene::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    /* distant mountains (blocky stripes) */
+    linear-gradient(to right,
+      transparent 0 calc(12% - var(--pixel-size)),
+      var(--hero-piece-3) calc(12% - var(--pixel-size)) calc(12% + var(--pixel-size)),
+      transparent calc(12% + var(--pixel-size)) 100%),
+    linear-gradient(to right,
+      transparent 0 calc(36% - var(--pixel-size)),
+      var(--hero-piece-4) calc(36% - var(--pixel-size)) calc(36% + var(--pixel-size)),
+      transparent calc(36% + var(--pixel-size)) 100%),
+    linear-gradient(to right,
+      transparent 0 calc(64% - var(--pixel-size)),
+      var(--hero-piece-5) calc(64% - var(--pixel-size)) calc(64% + var(--pixel-size)),
+      transparent calc(64% + var(--pixel-size)) 100%),
+    /* ground band (pixel stepped) */
+    linear-gradient(180deg,
+      transparent 0 58%,
+      var(--footer-piece-9) 58% 60%,
+      var(--footer-piece-11) 60% 62%,
+      var(--footer-piece-13) 62% 64%,
+      var(--footer-piece-15) 64% 100%
+    );
+  background-size:
+    /* mountains lines scale: create chunky steps using background-size */
+    calc(var(--pixel-size) * 8) calc(var(--pixel-size) * 8),
+    calc(var(--pixel-size) * 8) calc(var(--pixel-size) * 8),
+    calc(var(--pixel-size) * 8) calc(var(--pixel-size) * 8),
+    100% 100%;
+  background-repeat: repeat-x, repeat-x, repeat-x, no-repeat;
+  mix-blend-mode: normal;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Large foreground tiles: platforms built from repeating-linear-gradient stripes (pixel tiled) */
+.platforms {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8vh;
+  height: 30vh;
+  pointer-events: none;
+}
+
+.platform {
+  --w: 220px;
+  width: var(--w);
+  height: 64px;
+  position: absolute;
+  bottom: 4vh;
+  background:
+    /* top row (platform top edge) */
+    repeating-linear-gradient(90deg,
+      var(--hero-piece-11) 0 var(--pixel-size),
+      var(--hero-piece-10) var(--pixel-size) calc(var(--pixel-size)*2)
+    ),
+    /* body */
+    repeating-linear-gradient(90deg,
+      var(--hero-piece-7) 0 calc(var(--pixel-size)*1.2),
+      var(--hero-piece-8) calc(var(--pixel-size)*1.2) calc(var(--pixel-size)*2.4)
+    ),
+    /* darker base */
+    linear-gradient(to bottom, transparent 0 60%, rgba(0,0,0,0.12) 60% 100%);
+  background-size: calc(var(--pixel-size)*2) calc(var(--pixel-size)*2), calc(var(--pixel-size)*3) calc(var(--pixel-size)*3), 100% 100%;
+  border: calc(var(--pixel-size)/2) solid rgba(0,0,0,0.15);
+  box-shadow: 0 calc(var(--pixel-size)*2) calc(var(--pixel-size)*2) rgba(0,0,0,0.25);
+  image-rendering: pixelated;
+  border-radius: 2px;
+}
+
+/* place platform instances */
+.platform.p1 { left: 6%; bottom: 12vh; transform: scale(1); --w: 260px; }
+.platform.p2 { left: 38%; bottom: 9vh; transform: scale(0.95); --w: 190px; }
+.platform.p3 { left: 72%; bottom: 14vh; transform: scale(1.05); --w: 220px; }
+
+/* Pixel coins using box-shadow to lay out square pixel blocks — compact sprite */
+.coin {
+  position: absolute;
+  width: calc(var(--pixel-size)*3);
+  height: calc(var(--pixel-size)*3);
+  left: 50%;
+  bottom: 28%;
+  transform: translate(-50%,0);
+  filter: drop-shadow(0 calc(var(--pixel-size)) calc(var(--pixel-size)) rgba(0,0,0,0.25));
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* coin pixel art using box-shadow (a 5x5-ish pixel coin) */
+.coin::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--pixel-size);
+  height: var(--pixel-size);
+  background: var(--footer-piece-11);
+  box-shadow:
+    calc(var(--pixel-size)*1) 0 var(--footer-piece-10),
+    calc(var(--pixel-size)*2) 0 var(--footer-piece-9),
+    0 calc(var(--pixel-size)*1) var(--footer-piece-10),
+    calc(var(--pixel-size)*1) calc(var(--pixel-size)*1) var(--footer-piece-11),
+    calc(var(--pixel-size)*2) calc(var(--pixel-size)*1) var(--footer-piece-10),
+    0 calc(var(--pixel-size)*2) var(--footer-piece-9),
+    calc(var(--pixel-size)*1) calc(var(--pixel-size)*2) var(--footer-piece-11),
+    calc(var(--pixel-size)*2) calc(var(--pixel-size)*2) var(--footer-piece-9);
+  transform-origin: center;
+  animation: coin-bob 1.8s ease-in-out infinite;
+}
+
+/* multiple coin instances */
+.coin.c1 { left: 20%; bottom: 36%; }
+.coin.c2 { left: 36%; bottom: 46%; transform: scale(0.9); }
+.coin.c3 { left: 54%; bottom: 40%; transform: scale(1.05); }
+.coin.c4 { left: 80%; bottom: 50%; }
+
+/* hero sprite: small pixel character made with box-shadow */
+.hero {
+  position: absolute;
+  left: 12%;
+  bottom: 20%;
+  width: calc(var(--pixel-size)*3);
+  height: calc(var(--pixel-size)*3);
+  transform: translate3d(0,0,0);
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.hero .pix {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--pixel-size);
+  height: var(--pixel-size);
+  background: var(--hero-piece-11);
+  box-shadow:
+    /* row y=0 (top) */
+    calc(var(--pixel-size)*1) calc(var(--pixel-size)*0) var(--hero-piece-12),
+    calc(var(--pixel-size)*2) calc(var(--pixel-size)*0) var(--hero-piece-12),
+
+    /* row y=1 (hair / hat) */
+    0 calc(var(--pixel-size)*1) var(--hero-piece-2),
+    calc(var(--pixel-size)*1) calc(var(--pixel-size)*1) var(--hero-piece-3),
+    calc(var(--pixel-size)*2) calc(var(--pixel-size)*1) var(--hero-piece-2),
+
+    /* row y=2 (face) */
+    0 calc(var(--pixel-size)*2) var(--hero-piece-11),
+    calc(var(--pixel-size)*1) calc(var(--pixel-size)*2) var(--hero-piece-6),
+    calc(var(--pixel-size)*2) calc(var(--pixel-size)*2) var(--hero-piece-11),
+
+    /* row y=3 (body) */
+    0 calc(var(--pixel-size)*3) var(--hero-piece-5),
+    calc(var(--pixel-size)*1) calc(var(--pixel-size)*3) var(--hero-piece-6),
+    calc(var(--pixel-size)*2) calc(var(--pixel-size)*3) var(--hero-piece-5),
+
+    /* row y=4 (legs) */
+    calc(var(--pixel-size)*1) calc(var(--pixel-size)*4) var(--hero-piece-7),
+    calc(var(--pixel-size)*2) calc(var(--pixel-size)*4) var(--hero-piece-9);
+  animation: hero-wiggle 1.2s steps(2) infinite;
+}
+
+/* sparkle cluster (tiny squares) */
+.sparkle {
+  position: absolute;
+  width: calc(var(--pixel-size)/1.6);
+  height: calc(var(--pixel-size)/1.6);
+  background: var(--footer-piece-11);
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.25));
+  image-rendering: pixelated;
+  pointer-events: none;
+  opacity: 0.95;
+  animation: sparkle-rise 3.2s linear infinite;
+}
+
+.sparkle.s1 { left: 10%; bottom: 22%; animation-delay: 0s; }
+.sparkle.s2 { left: 28%; bottom: 30%; animation-delay: 0.6s; }
+.sparkle.s3 { left: 44%; bottom: 18%; animation-delay: 0.9s; }
+.sparkle.s4 { left: 68%; bottom: 26%; animation-delay: 0.2s; }
+.sparkle.s5 { left: 86%; bottom: 34%; animation-delay: 0.8s; }
+
+/* Animations */
+@keyframes coin-bob {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.06); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes hero-wiggle {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes sparkle-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  60% { transform: translateY(-40px); opacity: 0.9; }
+  100% { transform: translateY(-90px); opacity: 0; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero .pix, .coin::before, .sparkle {
+    animation: none;
+  }
+}
+
+/* small responsive tweaks */
+@media (max-width: 720px) {
+  :root { --pixel-size: 5px; }
+  .platform { height: 52px; }
+}
