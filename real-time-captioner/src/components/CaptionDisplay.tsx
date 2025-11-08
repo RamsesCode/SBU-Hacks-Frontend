@@ -10,6 +10,7 @@ interface CaptionDisplayProps {
   backgroundColor?: string;
   textColor?: string;
   autoScroll?: boolean;
+  isListening?: boolean;
 }
 
 const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
@@ -19,7 +20,8 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
   showConfidence = false,
   backgroundColor = '#000000',
   textColor = '#ffffff',
-  autoScroll = true
+  autoScroll = true,
+  isListening = false
 }) => {
   const [visibleCaptions, setVisibleCaptions] = React.useState<Caption[]>([]);
   const [typedText, setTypedText] = React.useState<string>('');
@@ -129,53 +131,66 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
           <p className="subtitle">Click the microphone button to start</p>
         </div>
       ) : (
-        <div className="captions-container">
-          {visibleCaptions.map((caption: Caption, index: number) => {
-            const position = getCaptionPosition(index, visibleCaptions.length);
-            const opacity = getAgeOpacity(caption.timestamp, position);
-            
-            return (
-              <div 
-                key={caption.id} 
-                className={`caption-line karaoke-caption ${caption.isFinal ? 'final' : 'interim'} ${position}`}
-                style={{
-                  opacity,
-                  borderLeft: showConfidence 
-                    ? `4px solid ${getConfidenceColor(caption.confidence)}` 
-                    : 'none',
-                  transform: position === 'current' ? 'scale(1.2)' : 'scale(0.9)',
-                  fontWeight: position === 'current' ? 'bold' : 'normal'
-                }}
-              >
-                <div className="caption-content">
-                  {position === 'current' ? (
-                    <span className="caption-text terminal">
-                      {typedText}
-                      <span className="pixel-cursor" />
-                    </span>
-                  ) : (
-                    <span className="caption-text">{caption.text}</span>
-                  )}
-                  {showConfidence && (
-                    <span 
-                      className="confidence-indicator"
-                      style={{ color: getConfidenceColor(caption.confidence) }}
-                    >
-                      {Math.round(caption.confidence * 100)}%
-                    </span>
+        <>
+          {!isListening && (
+            <div className="paused-indicator" style={{
+              textAlign: 'center',
+              padding: '8px',
+              fontSize: '14px',
+              opacity: 0.6,
+              fontStyle: 'italic'
+            }}>
+              Stopped - Click CLEAR to reset or START to continue
+            </div>
+          )}
+          <div className="captions-container">
+            {visibleCaptions.map((caption: Caption, index: number) => {
+              const position = getCaptionPosition(index, visibleCaptions.length);
+              const opacity = getAgeOpacity(caption.timestamp, position);
+              
+              return (
+                <div 
+                  key={caption.id} 
+                  className={`caption-line karaoke-caption ${caption.isFinal ? 'final' : 'interim'} ${position}`}
+                  style={{
+                    opacity,
+                    borderLeft: showConfidence 
+                      ? `4px solid ${getConfidenceColor(caption.confidence)}` 
+                      : 'none',
+                    transform: position === 'current' ? 'scale(1.2)' : 'scale(0.9)',
+                    fontWeight: position === 'current' ? 'bold' : 'normal'
+                  }}
+                >
+                  <div className="caption-content">
+                    {position === 'current' ? (
+                      <span className="caption-text terminal">
+                        {typedText}
+                        <span className="pixel-cursor" />
+                      </span>
+                    ) : (
+                      <span className="caption-text">{caption.text}</span>
+                    )}
+                    {showConfidence && (
+                      <span 
+                        className="confidence-indicator"
+                        style={{ color: getConfidenceColor(caption.confidence) }}
+                      >
+                        {Math.round(caption.confidence * 100)}%
+                      </span>
+                    )}
+                  </div>
+                  {!caption.isFinal && position === 'current' && (
+                    <div className="typing-indicator">
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                    </div>
                   )}
                 </div>
-                {!caption.isFinal && position === 'current' && (
-                  <div className="typing-indicator">
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );

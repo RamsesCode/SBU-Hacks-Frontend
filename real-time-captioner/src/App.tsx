@@ -165,6 +165,7 @@ function App() {
           backgroundColor={settings.backgroundColor}
           textColor={settings.textColor}
           autoScroll={settings.autoScroll}
+          isListening={isListening}
         />
       </main>
 
