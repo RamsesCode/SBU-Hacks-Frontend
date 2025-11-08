@@ -23,14 +23,14 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
 }) => {
   const [visibleCaptions, setVisibleCaptions] = React.useState<Caption[]>([]);
 
-  // Auto-remove captions after 30 seconds
+  // Auto-remove captions after 15 seconds and limit to fewer lines for better positioning
   React.useEffect(() => {
     const now = new Date();
-    const thirtySecondsAgo = new Date(now.getTime() - 30000);
+    const fifteenSecondsAgo = new Date(now.getTime() - 15000);
     
-    // Filter out captions older than 30 seconds and only keep final results
+    // Filter out captions older than 15 seconds and only keep final results
     const filtered = captions.filter(caption => 
-      caption.timestamp > thirtySecondsAgo && caption.isFinal
+      caption.timestamp > fifteenSecondsAgo && caption.isFinal
     );
     
     // Add the latest interim result if it exists
@@ -39,40 +39,44 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
       filtered.push(latestInterim);
     }
     
-    setVisibleCaptions(filtered.slice(-maxLines));
+    // Limit to maximum 4 lines to prevent overflow and ensure current caption is visible
+    setVisibleCaptions(filtered.slice(-Math.min(maxLines, 4)));
   }, [captions, maxLines]);
 
   // Auto-clean old captions every second
   React.useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const thirtySecondsAgo = new Date(now.getTime() - 30000);
+      const fifteenSecondsAgo = new Date(now.getTime() - 15000);
       
       setVisibleCaptions(prev => 
-        prev.filter(caption => caption.timestamp > thirtySecondsAgo)
+        prev.filter(caption => caption.timestamp > fifteenSecondsAgo)
       );
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getAgeOpacity = (timestamp: Date): number => {
+  const getAgeOpacity = (timestamp: Date, position: string): number => {
     const now = new Date();
     const age = now.getTime() - timestamp.getTime();
-    const maxAge = 30000; // 30 seconds
+    const maxAge = 15000; // 15 seconds
+    
+    // Current caption always has full opacity
+    if (position === 'current') return 1;
     
     if (age >= maxAge) return 0;
-    if (age <= 5000) return 1; // Full opacity for first 5 seconds
+    if (age <= 3000) return 0.9; // High opacity for first 3 seconds
     
-    // Fade from 1 to 0.3 over the remaining 25 seconds
-    const fadeProgress = (age - 5000) / 25000;
-    return Math.max(0.3, 1 - (fadeProgress * 0.7));
+    // Fade from 0.9 to 0.4 over the remaining 12 seconds
+    const fadeProgress = (age - 3000) / 12000;
+    return Math.max(0.4, 0.9 - (fadeProgress * 0.5));
   };
 
   const getCaptionPosition = (index: number, total: number): string => {
-    if (total === 1) return 'center';
-    if (index === total - 1) return 'center'; // Latest caption in center
-    return 'above'; // Older captions move up
+    if (total === 1) return 'current';
+    if (index === total - 1) return 'current'; // Latest caption is current (bottom)
+    return 'older'; // Older captions move up
   };
 
   const getConfidenceColor = (confidence: number): string => {
@@ -102,7 +106,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
         <div className="captions-container">
           {visibleCaptions.map((caption: Caption, index: number) => {
             const position = getCaptionPosition(index, visibleCaptions.length);
-            const opacity = getAgeOpacity(caption.timestamp);
+            const opacity = getAgeOpacity(caption.timestamp, position);
             
             return (
               <div 
@@ -113,8 +117,8 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
                   borderLeft: showConfidence 
                     ? `4px solid ${getConfidenceColor(caption.confidence)}` 
                     : 'none',
-                  transform: position === 'center' ? 'scale(1.1)' : 'scale(1)',
-                  fontWeight: position === 'center' ? 'bold' : 'normal'
+                  transform: position === 'current' ? 'scale(1.2)' : 'scale(0.9)',
+                  fontWeight: position === 'current' ? 'bold' : 'normal'
                 }}
               >
                 <div className="caption-content">
@@ -128,7 +132,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
                     </span>
                   )}
                 </div>
-                {!caption.isFinal && position === 'center' && (
+                {!caption.isFinal && position === 'current' && (
                   <div className="typing-indicator">
                     <span className="dot"></span>
                     <span className="dot"></span>

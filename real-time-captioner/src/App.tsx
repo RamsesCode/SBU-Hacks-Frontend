@@ -10,7 +10,7 @@ import './App.css';
 const defaultSettings: CaptionSettings = {
   fontSize: 32,
   fontFamily: 'Arial',
-  backgroundColor: '#000000',
+  backgroundColor: 'transparent',
   textColor: '#ffffff',
   maxLines: 8,
   autoScroll: true,
@@ -88,11 +88,10 @@ function App() {
 
   return (
     <div className="App" style={{ 
-      backgroundColor: settings.backgroundColor,
       fontFamily: settings.fontFamily 
     }}>
       <header className="app-header">
-        <h1>Real-Time Captioner</h1>
+        <h1>SpeakEasy</h1>
         <div className="header-controls">
           <button 
             className="settings-button"
