@@ -147,3 +147,65 @@ Respond in JSON format:
     throw error;
   }
 }
+
+/**
+ * Chat with AI assistant about lecture notes
+ * @param userMessage - The user's question or message
+ * @param sessions - All saved lecture sessions for context
+ * @returns AI assistant's response
+ */
+export async function chatWithAI(
+  userMessage: string,
+  sessions: any[]
+): Promise<string> {
+  if (!API_KEY) {
+    throw new Error('Google AI API key is not configured.');
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ 
+      model: 'gemini-2.5-flash',
+      generationConfig: {
+        temperature: 0.8,
+        maxOutputTokens: 1024,
+      }
+    });
+
+    // Build context from sessions
+    const lectureContext = sessions.map(session => {
+      const date = new Date(session.timestamp).toLocaleDateString();
+      return `
+**Lecture: ${session.subject} (${date})**
+Duration: ${session.duration} minutes
+${session.aiSummary ? `Summary: ${session.aiSummary}` : ''}
+${session.keyPoints ? `Key Points: ${session.keyPoints.join(', ')}` : ''}
+${session.topics ? `Topics: ${session.topics.join(', ')}` : ''}
+Transcript: ${session.rawText?.substring(0, 500)}...
+---`;
+    }).join('\n');
+
+    const prompt = `You are a helpful study assistant for a student. You have access to their lecture notes and recordings.
+
+Available Lecture Notes:
+${lectureContext || 'No lecture notes saved yet.'}
+
+Student Question: ${userMessage}
+
+Provide a helpful, conversational response. If the student asks about assignments, deadlines, or specific topics mentioned in lectures, reference the lecture notes above. If they ask about something not in the notes, politely let them know and offer to help with what you do know.
+
+Keep responses concise (2-3 paragraphs max) and friendly.`;
+
+    console.log('🤖 Sending chat request to Gemini...');
+    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    console.log('✅ Chat response received');
+    
+    return text;
+  } catch (error) {
+    console.error('❌ Error in chat:', error);
+    throw new Error(`Failed to get response: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}

@@ -15,6 +15,16 @@
   transform: scale(0.95);
 }
 
+/* Stop hover animation when chat is open */
+.chatbot-trigger.chat-open {
+  transform: none !important;
+  cursor: default;
+}
+
+.chatbot-trigger.chat-open:hover {
+  transform: none !important;
+}
+
 .chatbot-figure {
   width: 120px;
   height: auto;
@@ -23,6 +33,21 @@
   image-rendering: pixelated; /* Keeps pixel art crisp */
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Stop floating animation when chat is open */
+.chatbot-trigger.chat-open .chatbot-figure {
+  animation: none;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .chatbot-tooltip {
