@@ -5,11 +5,15 @@
   overflow-y: auto;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   font-family: 'VT323', monospace;
+  position: relative;
+  z-index: 50;
 }
 
 .notes-header {
   text-align: center;
   margin-bottom: 40px;
+  position: relative;
+  z-index: 60;
 }
 
 .notes-title {
@@ -39,6 +43,8 @@
 .notes-controls {
   max-width: 1200px;
   margin: 0 auto 30px;
+  position: relative;
+  z-index: 60;
 }
 
 .search-container {
@@ -115,6 +121,8 @@
 .sessions-container {
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 60;
 }
 
 .no-sessions {
@@ -149,6 +157,8 @@
   padding: 20px;
   transition: all 0.3s;
   box-shadow: 0 4px 0 #1a1a2e;
+  position: relative;
+  z-index: 65;
 }
 
 .session-card:hover {
@@ -271,9 +281,10 @@
   padding: 20px;
   font-size: 18px;
   color: rgba(244, 244, 244, 0.6);
-  border-top: 2px solid rgba(41, 173, 255, 0.3);
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 60;
 }
 
 /* Animations */
