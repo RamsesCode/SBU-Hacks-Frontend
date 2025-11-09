@@ -7,6 +7,8 @@ interface NavbarProps {
   onForceReset: () => void;
   onLogout?: () => void;
   userName?: string;
+  onNavigateHome?: () => void;
+  onNavigateNotes?: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
@@ -15,6 +17,8 @@ const Navbar: React.FC<NavbarProps> = ({
   onForceReset,
   onLogout,
   userName,
+  onNavigateHome,
+  onNavigateNotes,
 }) => {
   return (
     <header className="navbar">
@@ -27,14 +31,14 @@ const Navbar: React.FC<NavbarProps> = ({
       <div className="navbar-controls">
         <button 
           className="navbar-button navbar-button-home"
-          onClick={() => {/* Navigate to home */}}
+          onClick={onNavigateHome}
           aria-label="Home"
         >
           🏠 Home
         </button>
         <button 
           className="navbar-button navbar-button-secondary"
-          onClick={() => {/* Navigate to notes */}}
+          onClick={onNavigateNotes}
           aria-label="Notes"
         >
           📝 Notes

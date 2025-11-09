@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import TroubleshootingTips from './TroubleshootingTips';
+import { useVolumeMonitor } from '../hooks/useVolumeMonitor';
 import './AudioControls.css';
 
 interface AudioControlsProps {
@@ -7,7 +8,6 @@ interface AudioControlsProps {
   isSupported: boolean;
   onToggleListening: () => void;
   onClearCaptions: () => void;
-  volume?: number;
   errorMessage?: string;
 }
 
@@ -16,9 +16,77 @@ const AudioControls: React.FC<AudioControlsProps> = ({
   isSupported,
   onToggleListening,
   onClearCaptions,
-  volume = 0,
   errorMessage
 }) => {
+  const { volume, volumeLevel } = useVolumeMonitor({ isListening });
+  const [showVolumeFeedback, setShowVolumeFeedback] = useState(false);
+  const [lastShownLevel, setLastShownLevel] = useState<'silent' | 'low' | 'good' | 'excellent'>('silent');
+
+  useEffect(() => {
+    if (!isListening) {
+      setShowVolumeFeedback(false);
+      setLastShownLevel('silent');
+      return;
+    }
+
+    // Show feedback after 2 seconds of listening (initial)
+    const initialTimer = setTimeout(() => {
+      if (volumeLevel !== 'silent' && volumeLevel !== 'good') {
+        setShowVolumeFeedback(true);
+        setLastShownLevel(volumeLevel);
+        
+        // Hide after 5 seconds
+        setTimeout(() => {
+          setShowVolumeFeedback(false);
+        }, 5000);
+      }
+    }, 2000);
+
+    return () => clearTimeout(initialTimer);
+  }, [isListening, volumeLevel]);
+
+  // Show feedback when volume level changes between excellent and low
+  useEffect(() => {
+    if (!isListening || volumeLevel === 'silent' || volumeLevel === 'good') return;
+
+    // Only show if the level changed between excellent and low
+    const shouldShow = 
+      (lastShownLevel === 'excellent' && volumeLevel === 'low') ||
+      (lastShownLevel === 'low' && volumeLevel === 'excellent');
+
+    if (shouldShow) {
+      setShowVolumeFeedback(true);
+      setLastShownLevel(volumeLevel);
+      
+      // Hide after 5 seconds
+      const timer = setTimeout(() => {
+        setShowVolumeFeedback(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [volumeLevel, isListening, lastShownLevel]);
+
+  const getVolumeFeedback = () => {
+    switch (volumeLevel) {
+      case 'low':
+        return {
+          text: 'Poor Volume',
+          className: 'volume-feedback-low'
+        };
+      case 'excellent':
+        return {
+          text: 'Excellent Volume',
+          className: 'volume-feedback-excellent'
+        };
+      default:
+        return {
+          text: '',
+          className: ''
+        };
+    }
+  };
+
   if (!isSupported) {
     return (
       <div className="audio-controls error">
@@ -72,15 +140,23 @@ const AudioControls: React.FC<AudioControlsProps> = ({
         </div>
 
         {isListening && (
-          <div className="volume-indicator">
-            <div className="volume-bars">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`volume-bar ${i < Math.floor(volume * 5) ? 'active' : ''}`}
-                />
-              ))}
+          <div className="volume-indicator-container">
+            <div className="volume-indicator">
+              <div className="volume-bars">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`volume-bar ${i < Math.floor(volume * 5) ? 'active' : ''}`}
+                  />
+                ))}
+              </div>
             </div>
+            
+            {showVolumeFeedback && (volumeLevel === 'low' || volumeLevel === 'excellent') && (
+              <div className={`volume-feedback ${getVolumeFeedback().className}`}>
+                {getVolumeFeedback().text}
+              </div>
+            )}
           </div>
         )}
       </div>

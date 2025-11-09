@@ -6,6 +6,7 @@ import Settings from './components/Settings';
 import Diagnostics from './components/Diagnostics';
 import Navbar from './components/Navbar';
 import Landing from './components/Landing';
+import Notes from './components/Notes';
 import ChatbotTrigger from './components/ChatbotTrigger';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
 import { Caption, CaptionSettings } from './types/speech';
@@ -30,6 +31,7 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showDiagnostics, setShowDiagnostics] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'home' | 'notes'>('home');
 
   const handleResult = useCallback((caption: Caption) => {
     setCaptions(prev => {
@@ -133,69 +135,77 @@ function App() {
         onForceReset={() => window.location.reload()}
         onLogout={handleLogout}
         userName={user?.name || user?.nickname || user?.given_name || 'User'}
+        onNavigateHome={() => setCurrentPage('home')}
+        onNavigateNotes={() => setCurrentPage('notes')}
       />
       {/* Pixel frame overlay that expands to the browser edges between navbar and controls */}
       <div className="pixel-frame" aria-hidden="true" />
 
-      <main className="app-main">
-        {errorMessage && (
-          <div className="error-banner">
-            <span className="error-icon">⚠️</span>
-            <span className="error-text">{errorMessage}</span>
-            <button
-              className="error-close"
-              onClick={() => setErrorMessage('')}
-              aria-label="Close error message"
-            >
-              ×
-            </button>
-          </div>
-        )}
-        {showDiagnostics && <Diagnostics isVisible={showDiagnostics} />}
-        {showDiagnostics && (
-          <div style={{
-            position: 'fixed',
-            top: '120px',
-            right: '20px',
-            background: 'rgba(0,0,0,0.8)',
-            color: 'white',
-            padding: '10px',
-            borderRadius: '5px',
-            fontSize: '12px',
-            zIndex: 1000
-          }}>
-            <div>Is Listening: {isListening ? 'YES' : 'NO'}</div>
-            <div>Is Supported: {isSupported ? 'YES' : 'NO'}</div>
-            <div>Total Captions: {captions.length}</div>
-            <div>Last Caption: {captions[captions.length - 1]?.text?.substring(0, 30) || 'None'}</div>
-          </div>
-        )}
-        <CaptionDisplay
-          captions={captions}
-          fontSize={settings.fontSize}
-          backgroundColor={settings.backgroundColor}
-          textColor={settings.textColor}
-          autoScroll={settings.autoScroll}
-          isListening={isListening}
-        />
-      </main>
+      {currentPage === 'notes' ? (
+        <Notes />
+      ) : (
+        <>
+          <main className="app-main">
+            {errorMessage && (
+              <div className="error-banner">
+                <span className="error-icon">⚠️</span>
+                <span className="error-text">{errorMessage}</span>
+                <button
+                  className="error-close"
+                  onClick={() => setErrorMessage('')}
+                  aria-label="Close error message"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+            {showDiagnostics && <Diagnostics isVisible={showDiagnostics} />}
+            {showDiagnostics && (
+              <div style={{
+                position: 'fixed',
+                top: '120px',
+                right: '20px',
+                background: 'rgba(0,0,0,0.8)',
+                color: 'white',
+                padding: '10px',
+                borderRadius: '5px',
+                fontSize: '12px',
+                zIndex: 1000
+              }}>
+                <div>Is Listening: {isListening ? 'YES' : 'NO'}</div>
+                <div>Is Supported: {isSupported ? 'YES' : 'NO'}</div>
+                <div>Total Captions: {captions.length}</div>
+                <div>Last Caption: {captions[captions.length - 1]?.text?.substring(0, 30) || 'None'}</div>
+              </div>
+            )}
+            <CaptionDisplay
+              captions={captions}
+              fontSize={settings.fontSize}
+              backgroundColor={settings.backgroundColor}
+              textColor={settings.textColor}
+              autoScroll={settings.autoScroll}
+              isListening={isListening}
+            />
+          </main>
 
-      <AudioControls
-        isListening={isListening}
-        isSupported={isSupported}
-        onToggleListening={toggleListening}
-        onClearCaptions={clearCaptions}
-        errorMessage={errorMessage}
-      />
+          <AudioControls
+            isListening={isListening}
+            isSupported={isSupported}
+            onToggleListening={toggleListening}
+            onClearCaptions={clearCaptions}
+            errorMessage={errorMessage}
+          />
 
-      <Settings
-        settings={settings}
-        onSettingsChange={handleSettingsChange}
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
+          <Settings
+            settings={settings}
+            onSettingsChange={handleSettingsChange}
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+          />
 
-      <ChatbotTrigger />
+          <ChatbotTrigger />
+        </>
+      )}
     </div>
   );
 }
