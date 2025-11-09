@@ -13,6 +13,10 @@ export interface CaptureSession {
   topics?: string[];
   studyQuestions?: string[];
   reviewPoints?: string[];
+  // Translation fields
+  translatedCaptions?: string[];
+  translatedRawText?: string;
+  targetLanguage?: string;
 }
 
 export type SubjectFilter = 'All' | 'Computer Science' | 'Mathematics' | 'Physics' | 'Chemistry' | 'Biology' | 'History' | 'English' | 'Psychology' | 'Economics' | 'Engineering' | 'Other' | 'Unclassified';

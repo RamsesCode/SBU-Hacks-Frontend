@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import LanguageSelector from './LanguageSelector';
 import './Landing.css';
 
 interface LandingProps {
@@ -112,6 +113,9 @@ const Landing: React.FC<LandingProps> = ({ onLogin, onCreateAccount }) => {
           </button>
         </div>
       </div>
+      
+      {/* Language Selector at bottom left */}
+      <LanguageSelector />
     </div>
   );
 };

@@ -98,22 +98,92 @@
 
 /* Notes-style captions - document format */
 .notes-caption {
+  display: inline;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: left;
   margin: 0 0 8px 0;
   padding: 0;
   background-color: transparent; /* No background box */
   backdrop-filter: none;
   border-radius: 0;
-  display: block;
-  text-align: left;
-  width: 100%;
-  color: white !important; /* Force white color */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9); /* Strong shadow for readability */
   font-size: 1em;
   line-height: 1.6;
-  position: relative;
   z-index: 150; /* Above everything except UI controls */
   opacity: 1 !important; /* Force full opacity for all captions */
   border: none;
+}
+
+/* Dual language layout */
+.dual-language-container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--pixel-primary) rgba(0,0,0,0.3);
+  max-height: calc(100vh - 280px);
+}
+
+.dual-language-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dual-language-container::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.3);
+}
+
+.dual-language-container::-webkit-scrollbar-thumb {
+  background: var(--pixel-primary);
+  border-radius: 4px;
+}
+
+.dual-language-container::-webkit-scrollbar-thumb:hover {
+  background: var(--pixel-accent);
+}
+
+.language-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.language-header {
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--pixel-accent);
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.6);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--pixel-accent);
+  position: sticky;
+  top: 0;
+  background: var(--pixel-bg);
+  z-index: 10;
+}
+
+.language-captions {
+  flex: 1;
+  display: block;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.english-column .language-header {
+  color: var(--pixel-primary);
+  border-bottom-color: var(--pixel-primary);
+}
+
+.translation-column .language-header {
+  color: var(--pixel-accent);
+  border-bottom-color: var(--pixel-accent);
 }
 
 .notes-caption.current {

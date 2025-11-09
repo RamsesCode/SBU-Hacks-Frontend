@@ -1,5 +1,6 @@
 import React from 'react';
 import { Caption } from '../types/speech';
+import { useLanguage } from '../contexts/LanguageContext';
 import './CaptionDisplay.css';
 
 interface CaptionDisplayProps {
@@ -20,6 +21,8 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
   isListening = false
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const { language } = useLanguage();
+  const isDualLanguage = language !== 'en';
 
   // Keep ALL captions - no auto-removal, just manage final vs interim
   const visibleCaptions = React.useMemo(() => {
@@ -52,7 +55,7 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
   return (
     <div 
       id="caption-container"
-      className="caption-display notes-style"
+      className={`caption-display notes-style ${isDualLanguage ? 'dual-language' : ''}`}
       style={{
         backgroundColor,
         color: textColor,
@@ -81,24 +84,71 @@ const CaptionDisplay: React.FC<CaptionDisplayProps> = ({
               Stopped - Click CLEAR to reset or START to continue
             </div>
           )}
-          <div className="captions-scrollable-container" ref={containerRef}>
-            {visibleCaptions.map((caption: Caption, index: number) => {
-              const isLast = index === visibleCaptions.length - 1;
-              
-              return (
-                <span 
-                  key={caption.id} 
-                  className={`notes-caption ${caption.isFinal ? 'final' : 'interim'}`}
-                >
-                  <span className="caption-text">
-                    {caption.text}
-                    {isLast && !caption.isFinal && <span className="pixel-cursor" />}
+          {isDualLanguage ? (
+            <div className="dual-language-container" ref={containerRef}>
+              <div className="language-column english-column">
+                <div className="language-header">English</div>
+                <div className="language-captions">
+                  {visibleCaptions.map((caption: Caption, index: number) => {
+                    const isLast = index === visibleCaptions.length - 1;
+                    
+                    return (
+                      <span 
+                        key={`en-${caption.id}`} 
+                        className={`notes-caption ${caption.isFinal ? 'final' : 'interim'}`}
+                      >
+                        <span className="caption-text">
+                          {caption.text}
+                          {isLast && !caption.isFinal && <span className="pixel-cursor" />}
+                        </span>
+                        {' '}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="language-column translation-column">
+                <div className="language-header">Translation</div>
+                <div className="language-captions">
+                  {visibleCaptions.map((caption: Caption, index: number) => {
+                    const isLast = index === visibleCaptions.length - 1;
+                    
+                    return (
+                      <span 
+                        key={`tr-${caption.id}`} 
+                        className={`notes-caption ${caption.isFinal ? 'final' : 'interim'}`}
+                      >
+                        <span className="caption-text">
+                          {caption.translatedText || '...'}
+                          {isLast && !caption.isFinal && caption.translatedText && <span className="pixel-cursor" />}
+                        </span>
+                        {' '}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="captions-scrollable-container" ref={containerRef}>
+              {visibleCaptions.map((caption: Caption, index: number) => {
+                const isLast = index === visibleCaptions.length - 1;
+                
+                return (
+                  <span 
+                    key={caption.id} 
+                    className={`notes-caption ${caption.isFinal ? 'final' : 'interim'}`}
+                  >
+                    <span className="caption-text">
+                      {caption.text}
+                      {isLast && !caption.isFinal && <span className="pixel-cursor" />}
+                    </span>
+                    {' '}
                   </span>
-                  {' '}
-                </span>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </>
       )}
     </div>

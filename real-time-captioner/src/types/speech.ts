@@ -68,6 +68,7 @@ export interface Caption {
   isFinal: boolean;
   speaker?: string;
   color?: string;
+  translatedText?: string; // Translation of the caption
 }
 
 export interface CaptionSettings {
