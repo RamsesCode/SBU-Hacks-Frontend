@@ -6,6 +6,7 @@ import Settings from './components/Settings';
 import Diagnostics from './components/Diagnostics';
 import Navbar from './components/Navbar';
 import Landing from './components/Landing';
+import ChatbotTrigger from './components/ChatbotTrigger';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
 import { Caption, CaptionSettings } from './types/speech';
 import './App.css';
@@ -193,6 +194,8 @@ function App() {
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
       />
+
+      <ChatbotTrigger />
     </div>
   );
 }

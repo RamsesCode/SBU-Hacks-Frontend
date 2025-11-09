@@ -1,0 +1,126 @@
+.chatbot-trigger {
+  position: fixed;
+  bottom: 0px; /* Above the audio controls (120px) + some spacing */
+  right: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.chatbot-trigger:hover {
+  transform: scale(1.1) translateY(-5px);
+}
+
+.chatbot-trigger:active {
+  transform: scale(0.95);
+}
+
+.chatbot-figure {
+  width: 120px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  image-rendering: pixelated; /* Keeps pixel art crisp */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.chatbot-tooltip {
+  position: absolute;
+  top: 50%;
+  right: 140px;
+  transform: translateY(-50%);
+  background: var(--pixel-accent, #00ff88);
+  color: var(--pixel-bg, #1a1a2e);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+  border: 2px solid var(--pixel-bg, #1a1a2e);
+  animation: tooltipFadeIn 0.2s ease-out;
+  pointer-events: none;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+}
+
+.chatbot-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid var(--pixel-accent, #00ff88);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+/* Floating animation */
+.chatbot-trigger {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.chatbot-trigger:hover {
+  animation: none; /* Stop floating on hover */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .chatbot-trigger {
+    bottom: 120px;
+    right: 20px;
+  }
+  
+  .chatbot-figure {
+    width: 90px;
+  }
+  
+  .chatbot-tooltip {
+    right: 110px;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* Accessibility - reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .chatbot-trigger {
+    animation: none;
+  }
+  
+  .chatbot-trigger:hover {
+    transform: scale(1.05);
+  }
+  
+  .chatbot-tooltip {
+    animation: none;
+  }
+}
+
+/* Focus state for keyboard navigation */
+.chatbot-trigger:focus {
+  outline: 3px solid var(--pixel-accent, #00ff88);
+  outline-offset: 4px;
+}
